@@ -3,21 +3,21 @@
 let user = new UserForm;
 
 user.loginFormCallback = function(data) {
-    ApiConnector.login(data, response => {
-    if(response.success) {
+    ApiConnector.login(data, answer => {
+    if(answer.success) {
         location.reload();
     } else{
-        user.setLoginErrorMessage(response.error);
+        user.setLoginErrorMessage(answer.error);
     }
    })
 }
 
 user.registerFormCallback = function(data) {
-    ApiConnector.register(data, response => {
-        if(response.success) {
+    ApiConnector.register(data, answer => {
+        if(answer.success) {
             location.reload();
         } else{
-            user.setRegisterErrorMessage(response.error);
+            user.setRegisterErrorMessage(answer.error);
     }
     })
 }
