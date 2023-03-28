@@ -1,23 +1,23 @@
+"use strict";
+
 let user = new UserForm;
 
 user.loginFormCallback = function(data) {
-    ApiConnector.login(data, (data) => {
-    let obj = Object.create(data);
-    if(obj.success) {
+    ApiConnector.login(data, response => {
+    if(response.success) {
         location.reload();
     } else{
-        this.setLoginErrorMessage(obj.error);
+        user.setLoginErrorMessage(response.error);
     }
    })
 }
 
 user.registerFormCallback = function(data) {
-    ApiConnector.register(data, (data) => {
-        let obj = Object.create(data);
-        if(obj.success) {
+    ApiConnector.register(data, response => {
+        if(response.success) {
             location.reload();
         } else{
-            this.setRegisterErrorMessage(obj.error);
+            user.setRegisterErrorMessage(response.error);
     }
     })
 }
