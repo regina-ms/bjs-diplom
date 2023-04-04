@@ -1,6 +1,10 @@
 "use strict";
-
 let userLogout = new LogoutButton;
+let rates = new RatesBoard;
+let money = new MoneyManager;
+let favorite = new FavoritesWidget;
+let successMsg = "Запрос выполнен успешно";
+
 
 userLogout.action = () => {
     ApiConnector.logout(answer => {
@@ -13,31 +17,31 @@ userLogout.action = () => {
 ApiConnector.current(answer => {
     if(answer.success) {
         ProfileWidget.showProfile(answer.data);
+    } else {
+        MoneyManager.setMessage(answer.success, answer.error)
     }
 })
-
-let rates = new RatesBoard;
 
 let showRatesBoard = () => {
     ApiConnector.getStocks(answer => {
     if(answer.success) {
         rates.clearTable();
         rates.fillTable(answer.data);
-    }
+    } else {
+        MoneyManager.setMessage(answer.success, answer.error)
 })}
 
 showRatesBoard();
 setInterval(showRatesBoard, 60000);
 
-let money = new MoneyManager;
-
 money.addMoneyCallback = (cash) => {
     ApiConnector.addMoney(cash, answer => { 
         if(answer.success) {
             ProfileWidget.showProfile(answer.data);
-            answer.error = "Успех";
-        } 
-        money.setMessage(answer.success, answer.error);
+            money.setMessage(answer.success, successMsg);
+        } else { 
+            money.setMessage(answer.success, answer.error);
+        }
     })
 }
 
@@ -45,9 +49,10 @@ money.conversionMoneyCallback = (balance) => {
     ApiConnector.convertMoney (balance, answer => {
         if(answer.success) {
             ProfileWidget.showProfile(answer.data);
-            answer.error = "Успех";
-        } 
-        money.setMessage(answer.success, answer.error);
+            money.setMessage(answer.success, successMsg);
+        } else {
+            money.setMessage(answer.success, answer.error);
+        }
     })
 }
 
@@ -55,19 +60,20 @@ money.sendMoneyCallback = (amount) => {
     ApiConnector.transferMoney(amount, answer => {
         if(answer.success) {
             ProfileWidget.showProfile(answer.data);
-            answer.error = "Успех";
-        } 
-        money.setMessage(answer.success, answer.error);
+            money.setMessage(answer.success, successMsg);
+        } else {
+            money.setMessage(answer.success, answer.error);
+        }
     })
 }
-
-let favorite = new FavoritesWidget;
 
 ApiConnector.getFavorites(answer => {
     if (answer.success) {
         favorite.clearTable();
         favorite.fillTable(answer.data);
-        money.updateUsersList(answer.data);
+        MoneyManager.updateUsersList(answer.data);
+    } else {
+        money.setMessage(answer.success, answer.error);
     }
 });
 
@@ -76,10 +82,11 @@ favorite.addUserCallback = (data) => {
         if(answer.success) {
             favorite.clearTable();
             favorite.fillTable(answer.data);
-            money.updateUsersList(answer.data);
-            answer.error = "Успех";
-        } 
-        favorite.setMessage(answer.success, answer.error);
+            MoneyManager.updateUsersList(answer.data);
+            favorite.setMessage(answer.success, successMsg);
+        } else {
+            favorite.setMessage(answer.success, answer.error);
+        }
     })
 }
 
@@ -88,9 +95,10 @@ favorite.removeUserCallback = (data) => {
         if(answer.success) {
             favorite.clearTable();
             favorite.fillTable(answer.data);
-            money.updateUsersList(answer.data);
-            answer.error = "Успех";
-        } 
-        favorite.setMessage(answer.success, answer.error);
+            MoneyManager.updateUsersList(answer.data);
+            favorite.setMessage(answer.success, successMsg);
+        } else {
+            favorite.setMessage(answer.success, answer.error);
+        }
     })
 }
